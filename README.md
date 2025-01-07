@@ -4,8 +4,8 @@ A simple Todo List application built with Spring Boot.
 
 ## Requirements
 
-- Java 11 (OpenJDK)
-- Maven
+- Java 17 (OpenJDK)
+- Gradle
 - PostgreSQL
 
 ## Project Setup
@@ -18,12 +18,7 @@ A simple Todo List application built with Spring Boot.
    
 ## Build the project 
 
-   mvn clean install
-   
-## Run the Application:
-   Run the application with the following command
-
-   mvn spring-boot:run
+   ./gradlew build
    
 ## Accessing the application:
    Once the application is running, you can access it at
