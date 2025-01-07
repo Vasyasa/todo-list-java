@@ -2,6 +2,8 @@ package com.example.todolist.security.user;
 
 import com.example.todolist.security.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +13,6 @@ import com.example.todolist.security.util.JwtUtil;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.hibernate.internal.CoreLogging.logger;
 
 @RequiredArgsConstructor
 @Service
@@ -22,18 +23,21 @@ public class UserService  implements UserDetailsService {
     private final JwtUtil jwtUtil;
 
     public void createUser(UserEntity user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+        UserEntity newUser = new UserEntity(null, user.getEmail(), user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getRole());
+        userRepository.save(newUser);
     }
 
     public void removeUser(String email) {
-        UserEntity user = userRepository.findById(email)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
     }
 
     public void updateUser(String email, UserEntity updatedUser) {
-        UserEntity user = userRepository.findById(email).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         user.setUsername(updatedUser.getUsername());
         userRepository.save(user);
     }
@@ -48,14 +52,14 @@ public class UserService  implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        logger("Searching for user: " + username);
         UserEntity userEntity = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + userEntity.getRole());
 
         return new org.springframework.security.core.userdetails.User(
                 userEntity.getUsername(),
                 userEntity.getPassword(),
-                Collections.emptyList()
+                Collections.singletonList(authority)
         );
     }
 }

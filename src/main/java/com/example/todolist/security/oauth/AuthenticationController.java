@@ -6,18 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final CustomOAuthUserService userService;
@@ -30,8 +29,8 @@ public class AuthenticationController {
                          HttpServletResponse response) throws IOException, ServletException {
 
         try {
-            String email = authRequest.getEmail();
-            String password = authRequest.getPassword();
+            String email = authRequest.email();
+            String password = authRequest.password();
 
             CustomUserDetails user = userService.loadUserWithEmailAndPassword(email, password);
 

@@ -12,9 +12,10 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10-hour expiration
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
@@ -46,5 +47,7 @@ public class JwtUtil {
         Claims claims = extractClaims(token);
         return claims != null ? claims.getSubject() : null;
     }
-
+    public String extractRoles(String token) {
+        return extractClaims(token).get("role", String.class);
+    }
 }

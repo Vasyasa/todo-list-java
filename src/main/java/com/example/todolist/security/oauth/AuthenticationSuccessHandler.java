@@ -3,11 +3,12 @@ package com.example.todolist.security.oauth;
 import com.example.todolist.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
@@ -30,8 +31,14 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
                           HttpServletResponse response,
                           org.springframework.security.core.Authentication authentication) throws IOException {
 
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(roleStr -> roleStr.replace("ROLE_", ""))
+                .findFirst()
+                .orElse("USER");
+
         // Generate the JWT token
-        String token = jwtUtil.generateToken(authentication.getName());
+        String token = jwtUtil.generateToken(authentication.getName(), role);
 
         // Set the response content type to JSON
         response.setContentType("application/json");

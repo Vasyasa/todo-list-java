@@ -4,6 +4,7 @@ import com.example.todolist.security.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,6 +21,7 @@ public class UserController {
         return ResponseEntity.ok("User created successfully.");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/remove/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> removeUser(@PathVariable String email) {
@@ -27,12 +29,14 @@ public class UserController {
         return ResponseEntity.ok("User removed successfully.");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{email}")
     public ResponseEntity<String> updateUserName(@PathVariable String email, @RequestBody UserEntity user) {
         userService.updateUser(email, user);
         return ResponseEntity.ok("User updated successfully.");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/isTokenAlive")
     public ResponseEntity<Boolean> isTokenAlive(@RequestParam String token) {
         boolean isAlive = userService.isTokenAlive(token);

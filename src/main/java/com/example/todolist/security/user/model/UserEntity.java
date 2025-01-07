@@ -1,19 +1,26 @@
 package com.example.todolist.security.user.model;
-import lombok.Data;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import lombok.Setter;
 
-import javax.persistence.Entity;
 
-@Data
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
-@Entity(name = "users")
+@AllArgsConstructor
 public class UserEntity {
-
-        @javax.persistence.Id
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
         private String email;
-
         private String username;
         private String password;
+        private String role;
 }

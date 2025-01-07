@@ -1,20 +1,19 @@
 package com.example.todolist.security.oauth;
 
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 @Component
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 

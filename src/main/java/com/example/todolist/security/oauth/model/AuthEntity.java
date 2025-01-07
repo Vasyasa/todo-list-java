@@ -1,10 +1,4 @@
 package com.example.todolist.security.oauth.model;
 
-import lombok.Getter;
-
-@Getter
-public class AuthEntity {
-    private String email;
-    private String password;
-
+public record AuthEntity(String email, String password) {
 }

@@ -5,23 +5,31 @@ import com.example.todolist.security.user.model.CustomUserDetails;
 import com.example.todolist.security.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.stereotype.Service;
 
-@Component
+import java.util.Collection;
+import java.util.List;
+
 @RequiredArgsConstructor
+@Service
 public class CustomOAuthUserService extends DefaultOAuth2UserService {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     private CustomUserDetails getCustomUserDetails(UserEntity user) {
-        CustomUserDetails userDetails = new CustomUserDetails();
-        userDetails.setUsername(user.getEmail());
-        userDetails.setName(user.getEmail());
+        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().toUpperCase()));
 
-        return userDetails;
+        return new CustomUserDetails(
+                user.getUsername(),
+                user.getEmail(),
+                authorities,
+                null
+        );
     }
 
     public CustomUserDetails loadUserWithEmailAndPassword(String email, String password) {
@@ -39,6 +47,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
     }
 
     UserEntity getUser(String email) {
+        System.out.println("Querying for email: " + email);
         return userService.findByEmail(email)
                 .orElseThrow(() -> new InsufficientAuthenticationException("Failure. User not known."));
     }

@@ -1,33 +1,20 @@
 package com.example.todolist.todo;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity(name = "tasks")
+@Getter
+@Setter
 public class TodoEntity {
-    @javax.persistence.Id
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        private String title;
+        private String description;
+        private Boolean completed;
 
-    @Column(nullable = false)
-    private String title;
-
-    @Column
-    private String description;
-
-    @Column(nullable = false)
-    private boolean completed = false;
 }
